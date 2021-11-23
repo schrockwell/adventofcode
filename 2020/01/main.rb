@@ -16,3 +16,5 @@ puts "#{low} + #{high} = #{low + high}"
 puts "#{low} * #{high} = #{low * high}"
 
 raise 'Wrong result' unless low + high == 2020
+
+raise 'testing'
