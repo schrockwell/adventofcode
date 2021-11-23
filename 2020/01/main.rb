@@ -17,4 +17,5 @@ end
 puts "#{low} + #{high} = #{low + high}"
 puts "#{low} * #{high} = #{low * high}"
 
-raise unless low + high == answer
+raise unless low + high == 2020
+raise unless low * high == answer
