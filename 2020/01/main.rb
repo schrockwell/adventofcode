@@ -1,15 +1,15 @@
 #! /usr/bin/env ruby
 require_relative '../common.rb'
 
-input, answer = read_inputs(__dir__)
-input = input.map(&:to_i)
+numbers, answer = read_inputs(__dir__)
+numbers = numbers.map(&:to_i)
 answer = answer.to_i
 
 low = nil
 high = nil
 
-low = input.find do |l|
-    high = input.find do |h|
+low = numbers.find do |l|
+    high = numbers.find do |h|
         l + h == 2020
     end
 end
