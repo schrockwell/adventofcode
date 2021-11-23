@@ -1,7 +1,7 @@
 task default: %w[test]
 
 task :test do
-    pattern = File.join(File.dirname(__FILE__), '**', 'main.rb')
+    pattern = File.join(File.dirname(__FILE__), 'lib', 'day_*.rb')
 
     Dir.glob(pattern).each do |filename|
         puts "Running #{filename}..." 

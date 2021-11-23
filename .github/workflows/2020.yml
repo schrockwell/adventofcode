@@ -5,7 +5,7 @@
 # This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
 # For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
 
-name: 2020 Advent of Code - Ruby
+name: 2020 Advent of Code
 
 on:
   push:
@@ -22,6 +22,6 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '2.7'
-    - name: Run tests
-      working-directory: '2020'
+    - name: Run Ruby tests
+      working-directory: '2020/ruby'
       run: rake

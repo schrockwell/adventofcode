@@ -1,7 +1,7 @@
 #! /usr/bin/env ruby
 require_relative '../common.rb'
 
-numbers, answer = read_inputs(__dir__)
+numbers, answer = read_inputs(1)
 numbers = numbers.map(&:to_i)
 answer = answer.to_i
 
