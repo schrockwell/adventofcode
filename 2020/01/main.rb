@@ -1,7 +1,7 @@
 #! /usr/bin/env ruby
-load '../common.rb'
+require_relative '../common.rb'
 
-numbers = read_input.map(&:to_i).sort
+numbers = read_input(File.dirname(__FILE__)).map(&:to_i)
 
 low = nil
 high = nil
@@ -14,3 +14,5 @@ end
 
 puts "#{low} + #{high} = #{low + high}"
 puts "#{low} * #{high} = #{low * high}"
+
+raise 'Wrong result' unless low + high == 2020

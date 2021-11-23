@@ -1,0 +1,10 @@
+task default: %w[test]
+
+task :test do
+    pattern = File.join(File.dirname(__FILE__), '**', 'main.rb')
+
+    Dir.glob(pattern).each do |filename|
+        puts "Running #{filename}..." 
+        load filename
+    end
+end
