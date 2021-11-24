@@ -5,14 +5,21 @@ defmodule AdventOfCode.Day01 do
     input = Enum.map(input, &String.to_integer/1)
 
     # Extremely unoptimized, but it works!
-    answer =
+    answer_a =
       for x <- input, y <- input, x + y == 2020 do
         x * y
       end
       |> hd()
 
-    IO.puts("Answer: #{answer}")
+    answer_b =
+      for x <- input, y <- input, z <- input, x + y + z == 2020 do
+        x * y * z
+      end
+      |> hd()
 
-    to_string(answer)
+    IO.puts("Answer A: #{answer_a}")
+    IO.puts("Answer B: #{answer_b}")
+
+    {to_string(answer_a), to_string(answer_b)}
   end
 end

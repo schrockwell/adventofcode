@@ -1,5 +1,5 @@
 defmodule AdventOfCode do
-  @callback run(input :: [String.t()]) :: String.t()
+  @callback run(input :: [String.t()]) :: {String.t(), String.t()}
 
   def run do
     Enum.each(list_days(), &run/1)
@@ -11,18 +11,18 @@ defmodule AdventOfCode do
 
   def run(day) do
     module = day_module(day)
-    input = read_input(day)
+    input = read_lines(day, :input)
 
     IO.puts("----- DAY #{day} -----")
     module.run(input)
   end
 
   def run!(day) do
-    expected = read_answer(day)
-    answer = run(day)
+    expected = day |> read_lines(:answers) |> List.to_tuple()
+    answers = run(day)
 
-    if answer != expected do
-      raise "Wrong answer; expected #{inspect(expected)}, got #{inspect(answer)}"
+    if answers != expected do
+      raise "Wrong answers; expected #{inspect(expected)}, got #{inspect(answers)}"
     end
   end
 
@@ -37,19 +37,12 @@ defmodule AdventOfCode do
     String.to_atom("Elixir.AdventOfCode.Day#{day2string(day)}")
   end
 
-  defp read_input(day) do
-    ["..", "days", day2string(day), "input.txt"]
+  defp read_lines(day, basename) do
+    ["..", "days", day2string(day), "#{basename}.txt"]
     |> Path.join()
     |> File.read!()
     |> String.split("\n")
     |> Enum.reject(&(&1 == ""))
-  end
-
-  defp read_answer(day) do
-    ["..", "days", day2string(day), "answer.txt"]
-    |> Path.join()
-    |> File.read!()
-    |> String.trim()
   end
 
   defp day2string(day) do
