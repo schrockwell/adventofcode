@@ -3,8 +3,9 @@ task default: %w[test]
 task :test do
     pattern = File.join(File.dirname(__FILE__), 'lib', 'day_*.rb')
 
-    Dir.glob(pattern).each do |filename|
+    Dir.glob(pattern).sort.each do |filename|
         puts "Running #{filename}..." 
         load filename
+        puts
     end
 end

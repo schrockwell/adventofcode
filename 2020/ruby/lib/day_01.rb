@@ -20,8 +20,6 @@ puts "#{low} * #{high} = #{low * high}"
 raise unless low + high == 2020
 raise unless low * high == answers[0]
 
-puts '--------'
-
 mid = nil
 
 low = numbers.find do |l|
