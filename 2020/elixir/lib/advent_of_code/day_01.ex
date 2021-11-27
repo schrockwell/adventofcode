@@ -17,9 +17,6 @@ defmodule AdventOfCode.Day01 do
       end
       |> hd()
 
-    IO.puts("Answer A: #{answer_a}")
-    IO.puts("Answer B: #{answer_b}")
-
-    {to_string(answer_a), to_string(answer_b)}
+    {answer_a, answer_b}
   end
 end

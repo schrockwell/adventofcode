@@ -11,10 +11,7 @@ defmodule AdventOfCode.Day03 do
         acc * count_trees(input, x_inc, y_inc)
       end)
 
-    IO.puts("Answer A: #{answer_a}")
-    IO.puts("Answer B: #{answer_b}")
-
-    {to_string(answer_a), to_string(answer_b)}
+    {answer_a, answer_b}
   end
 
   defp count_trees(lines, x_inc, y_inc) do

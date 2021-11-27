@@ -10,10 +10,7 @@ defmodule AdventOfCode.Day04 do
     answer_a = Enum.count(passports, &has_required_fields?/1)
     answer_b = Enum.count(passports, &valid_passport?/1)
 
-    IO.puts("Answer A: #{answer_a}")
-    IO.puts("Answer B: #{answer_b}")
-
-    {to_string(answer_a), to_string(answer_b)}
+    {answer_a, answer_b}
   end
 
   defp parse_passports(input) do

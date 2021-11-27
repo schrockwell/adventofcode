@@ -20,7 +20,7 @@ defmodule AdventOfCode.Day05 do
 
     answer_b = lower + 1
 
-    {to_string(answer_a), to_string(answer_b)}
+    {answer_a, to_string(answer_b)}
   end
 
   defp split_word(<<row::binary-7, col::binary-3>>) do

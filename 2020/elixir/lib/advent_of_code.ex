@@ -1,5 +1,5 @@
 defmodule AdventOfCode do
-  @callback run(input :: [String.t()]) :: {String.t(), String.t()}
+  @callback run(input :: [String.t()]) :: {term, term}
 
   def run do
     Enum.each(list_days(), &run/1)
@@ -19,10 +19,15 @@ defmodule AdventOfCode do
 
   def run!(day) do
     expected = day |> read_lines(:answers) |> List.to_tuple()
-    answers = run(day)
+    {answer_a, answer_b} = run(day)
 
-    if answers != expected do
-      raise "Wrong answers; expected #{inspect(expected)}, got #{inspect(answers)}"
+    IO.puts("Answer A: #{answer_a}")
+    IO.puts("Answer B: #{answer_b}")
+
+    result = {to_string(answer_a), to_string(answer_b)}
+
+    if result != expected do
+      raise "Wrong answers; expected #{inspect(expected)}, got #{inspect(result)}"
     end
   end
 

@@ -28,7 +28,7 @@ defmodule AdventOfCode.Day06 do
       end)
       |> Enum.sum()
 
-    {to_string(answer_a), to_string(answer_b)}
+    {answer_a, answer_b}
   end
 
   defp groupify(input) do
