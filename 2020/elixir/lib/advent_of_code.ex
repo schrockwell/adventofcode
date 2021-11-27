@@ -42,7 +42,6 @@ defmodule AdventOfCode do
     |> Path.join()
     |> File.read!()
     |> String.split("\n")
-    |> Enum.reject(&(&1 == ""))
   end
 
   defp day2string(day) do
