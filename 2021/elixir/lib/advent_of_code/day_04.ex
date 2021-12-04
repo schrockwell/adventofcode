@@ -10,11 +10,8 @@ defmodule AdventOfCode.Day04 do
       |> Enum.chunk_every(6)
       |> Enum.map(&parse_board/1)
 
-    {latest_num, boards, [winning_index | _]} = do_drawings(drawn, boards, :first)
-    answer_a = final_score(latest_num, Enum.at(boards, winning_index))
-
-    {latest_num, boards, winning_indexes} = do_drawings(drawn, boards, :last)
-    answer_b = final_score(latest_num, Enum.at(boards, List.last(winning_indexes)))
+    answer_a = do_drawings(drawn, boards, :first)
+    answer_b = do_drawings(drawn, boards, :last)
 
     {answer_a, answer_b}
   end
@@ -61,27 +58,22 @@ defmodule AdventOfCode.Day04 do
   defp do_drawings([num | rest], boards, which, winning_indexes \\ []) do
     boards = draw_number(num, boards)
 
-    indexes =
+    newly_won_indexes =
       boards
       |> Enum.with_index()
-      |> Enum.filter(fn {board, _i} -> winning?(board) end)
+      |> Enum.filter(fn {board, i} -> winning?(board) and i not in winning_indexes end)
       |> Enum.map(fn {_, i} -> i end)
 
-    next_indexes =
-      Enum.reduce(indexes, winning_indexes, fn i, wi ->
-        if i in wi do
-          wi
-        else
-          wi ++ [i]
-        end
-      end)
+    next_indexes = winning_indexes ++ newly_won_indexes
 
     cond do
       which == :first and length(next_indexes) == 1 ->
-        {num, boards, next_indexes}
+        winning_index = hd(next_indexes)
+        final_score(num, Enum.at(boards, winning_index))
 
       which == :last and length(next_indexes) == length(boards) ->
-        {num, boards, next_indexes}
+        winning_index = List.last(next_indexes)
+        final_score(num, Enum.at(boards, winning_index))
 
       true ->
         do_drawings(rest, boards, which, next_indexes)
