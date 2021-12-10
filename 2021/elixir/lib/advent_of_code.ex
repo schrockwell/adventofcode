@@ -31,7 +31,7 @@ defmodule AdventOfCode do
     end
   end
 
-  defp list_days do
+  def list_days do
     Enum.filter(1..25, fn day ->
       module = day_module(day)
       match?({:module, ^module}, Code.ensure_compiled(module))
