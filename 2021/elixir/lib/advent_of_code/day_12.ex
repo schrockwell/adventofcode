@@ -2,16 +2,16 @@ defmodule AdventOfCode.Day12 do
   @behaviour AdventOfCode
 
   defmodule Node do
-    defstruct [:name, :big?, :visited?, :adjacent]
+    defstruct [:name, :big?, :visits, :adjacent]
   end
 
   def run(input) do
     graph = parse_graph(input)
-    paths = traverse(graph)
 
-    answer_a = length(paths)
+    answer_a = graph |> traverse(:single) |> length()
+    answer_b = graph |> traverse(:double) |> length()
 
-    {answer_a, "todo"}
+    {answer_a, answer_b}
   end
 
   # Returns a map of %{name => %Node{}}
@@ -28,10 +28,10 @@ defmodule AdventOfCode.Day12 do
     end)
     |> Enum.map(fn {name, adjacent} ->
       big? = String.upcase(name) == name
-      {name, %Node{name: name, adjacent: adjacent, big?: big?, visited?: false}}
+      {name, %Node{name: name, adjacent: adjacent, big?: big?, visits: 0}}
     end)
     |> Map.new()
-    |> Map.put("end", %Node{name: "end", adjacent: [], big?: false, visited?: false})
+    |> Map.put("end", %Node{name: "end", adjacent: [], big?: false, visits: 0})
   end
 
   defp put_edge(map, from, to) do
@@ -39,24 +39,42 @@ defmodule AdventOfCode.Day12 do
   end
 
   # Only big nodes and non-visited small nodes can be visited
-  defp can_visit?(%Node{big?: true}), do: true
-  defp can_visit?(%Node{big?: false, visited?: false}), do: true
-  defp can_visit?(_), do: false
+  defp can_visit?(mode, graph, name) when is_binary(name),
+    do: can_visit?(mode, graph, graph[name])
+
+  defp can_visit?(_mode, _graph, %Node{name: "start"}), do: false
+  defp can_visit?(_mode, _graph, %Node{big?: true}), do: true
+  defp can_visit?(_mode, _graph, %Node{big?: false, visits: 0}), do: true
+
+  # Part 1: In :single mode, small nodes can only be visisted once
+  defp can_visit?(:single, _graph, %Node{big?: false, visits: 1}), do: false
+
+  # Part 2: In :double mode, one small node may be visited twice.
+  # This is VERY inefficient and we should not be looping here, but instead
+  # storing the doubled-up room name on the graph data structure so we don't
+  # have to look it up every time
+  defp can_visit?(:double, graph, %Node{big?: false, visits: 1}) do
+    graph
+    |> Enum.filter(fn {_, node} -> not node.big? end)
+    |> Enum.all?(fn {_, node} -> node.visits < 2 end)
+  end
+
+  defp can_visit?(:double, _graph, %Node{big?: false, visits: 2}), do: false
 
   # Update the node state
   defp visit_node(graph, name) do
-    Map.update!(graph, name, fn n -> %{n | visited?: true} end)
+    Map.update!(graph, name, fn n -> %{n | visits: n.visits + 1} end)
   end
 
   # The main recursion for walking the graph
-  def traverse(graph, name \\ "start", path \\ [], paths \\ [])
+  def traverse(graph, mode \\ :single, name \\ "start", path \\ [], paths \\ [])
 
-  def traverse(_graph, "end", path, paths) do
+  def traverse(_graph, _mode, "end", path, paths) do
     # We've made it!
     [Enum.reverse(["end" | path]) | paths]
   end
 
-  def traverse(graph, name, path, paths) do
+  def traverse(graph, mode, name, path, paths) do
     # Get our current node state
     node = graph[name]
 
@@ -67,15 +85,11 @@ defmodule AdventOfCode.Day12 do
     graph = visit_node(graph, name)
 
     # Find all adjacent nodes that are visitable
-    next_names =
-      node.adjacent
-      |> Enum.map(&graph[&1])
-      |> Enum.filter(&can_visit?/1)
-      |> Enum.map(& &1.name)
+    next_names = Enum.filter(node.adjacent, fn name -> can_visit?(mode, graph, name) end)
 
     # Just keep swimming
     Enum.reduce(next_names, paths, fn next_name, paths_acc ->
-      traverse(graph, next_name, path, paths_acc)
+      traverse(graph, mode, next_name, path, paths_acc)
     end)
   end
 end
