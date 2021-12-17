@@ -10,17 +10,18 @@ defmodule AdventOfCode.Day16 do
   end
 
   defmodule LiteralPacket do
-    defstruct version: nil, type_id: 4, value: 0
+    defstruct version: nil, value: 0
   end
 
   def run([input]) do
     bits = Base.decode16!(input)
 
-    {packet, _zeros} = parse(bits)
+    {master_packet, _zeros} = parse(bits)
 
-    answer_a = version_sum(packet)
+    answer_a = version_sum(master_packet)
+    answer_b = evaluate(master_packet)
 
-    {answer_a, "todo"}
+    {answer_a, answer_b}
   end
 
   # Main entry point for parsing a single packet from a chunk of upcoming bits
@@ -50,7 +51,7 @@ defmodule AdventOfCode.Day16 do
       packet = %LiteralPacket{version: process.version}
       %{process | state: {:literal, :value}, packet: packet, bits: bits}
     else
-      packet = %OperatorPacket{version: process.version}
+      packet = %OperatorPacket{version: process.version, type_id: type_id}
       %{process | state: {:operator, :type}, packet: packet, bits: bits}
     end
   end
@@ -117,7 +118,7 @@ defmodule AdventOfCode.Day16 do
 
     next_packet = %{
       process.packet
-      | subpackets: [subpacket | process.packet.subpackets],
+      | subpackets: process.packet.subpackets ++ [subpacket],
         payload_size: next_payload_size
     }
 
@@ -155,4 +156,50 @@ defmodule AdventOfCode.Day16 do
   end
 
   defp version_sum(%LiteralPacket{version: version}), do: version
+
+  # Answers for part 2
+
+  @sum 0
+  @product 1
+  @minimum 2
+  @maximum 3
+  @greater_than 5
+  @less_than 6
+  @equal_to 7
+
+  defp evaluate(%LiteralPacket{value: value}), do: value
+
+  defp evaluate(%OperatorPacket{type_id: @sum} = packet) do
+    packet.subpackets |> Enum.map(&evaluate/1) |> Enum.sum()
+  end
+
+  defp evaluate(%OperatorPacket{type_id: @product} = packet) do
+    packet.subpackets |> Enum.map(&evaluate/1) |> Enum.product()
+  end
+
+  defp evaluate(%OperatorPacket{type_id: @minimum} = packet) do
+    packet.subpackets |> Enum.map(&evaluate/1) |> Enum.min()
+  end
+
+  defp evaluate(%OperatorPacket{type_id: @maximum} = packet) do
+    packet.subpackets |> Enum.map(&evaluate/1) |> Enum.max()
+  end
+
+  defp evaluate(%OperatorPacket{type_id: @greater_than} = packet) do
+    [first, second] = packet.subpackets
+
+    if evaluate(first) > evaluate(second), do: 1, else: 0
+  end
+
+  defp evaluate(%OperatorPacket{type_id: @less_than} = packet) do
+    [first, second] = packet.subpackets
+
+    if evaluate(first) < evaluate(second), do: 1, else: 0
+  end
+
+  defp evaluate(%OperatorPacket{type_id: @equal_to} = packet) do
+    [first, second] = packet.subpackets
+
+    if evaluate(first) == evaluate(second), do: 1, else: 0
+  end
 end
