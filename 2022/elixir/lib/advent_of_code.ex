@@ -1,35 +1,19 @@
 defmodule AdventOfCode do
-  @callback run(input :: [String.t()]) :: {term, term}
+  @callback run(input :: String.t()) :: {:skip | term, :skip | term}
 
-  def run do
-    Enum.each(list_days(), &run/1)
-  end
+  def run(day, basename \\ :input) do
+    with {:ok, expected_a, expected_b, input} <- read_input_file(day, basename) do
+      {answer_a, answer_b} = day_module(day).run(input)
 
-  def run! do
-    Enum.each(list_days(), &run!/1)
-  end
+      if answer_a != :skip and to_string(answer_a) != expected_a do
+        raise "Wrong answer for A; expected #{expected_a}, got #{answer_a}"
+      end
 
-  def run(day) do
-    module = day_module(day)
-    input = read_file(day, :input)
+      if answer_b != :skip and to_string(answer_b) != expected_b do
+        raise "Wrong answer for B; expected #{expected_b}, got #{answer_b}"
+      end
 
-    IO.puts("----- DAY #{day} -----")
-    module.run(input)
-  end
-
-  def run!(day) do
-    expected = day |> read_file(:answers) |> String.split("\n")
-    {answer_a, answer_b} = run(day)
-
-    IO.puts("Answer A: #{answer_a}")
-    IO.puts("Answer B: #{answer_b}")
-
-    if answer_a != :skip and to_string(answer_a) != Enum.at(expected, 0) do
-      raise "Wrong answer for A; expected #{inspect(Enum.at(expected, 0))}, got #{inspect(answer_a)}"
-    end
-
-    if answer_b != :skip and to_string(answer_b) != Enum.at(expected, 1) do
-      raise "Wrong answer for B; expected #{inspect(Enum.at(expected, 1))}, got #{inspect(answer_b)}"
+      {:ok, answer_a, answer_b}
     end
   end
 
@@ -44,10 +28,18 @@ defmodule AdventOfCode do
     String.to_atom("Elixir.AdventOfCode.Day#{format_day(day)}")
   end
 
-  defp read_file(day, basename) do
+  defp read_input_file(day, basename) do
     ["priv", "days", format_day(day), "#{basename}.txt"]
     |> Path.join()
-    |> File.read!()
+    |> File.read()
+    |> case do
+      {:ok, contents} ->
+        [answer_a, answer_b, "---" | input] = String.split(contents, "\n")
+        {:ok, answer_a, answer_b, Enum.join(input, "\n")}
+
+      error ->
+        error
+    end
   end
 
   defp format_day(day) do
