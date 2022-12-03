@@ -11,14 +11,14 @@ defmodule AdventOfCode do
 
   def run(day) do
     module = day_module(day)
-    input = read_lines(day, :input)
+    input = read_file(day, :input)
 
     IO.puts("----- DAY #{day} -----")
     module.run(input)
   end
 
   def run!(day) do
-    expected = read_lines(day, :answers)
+    expected = day |> read_file(:answers) |> String.split("\n")
     {answer_a, answer_b} = run(day)
 
     IO.puts("Answer A: #{answer_a}")
@@ -41,17 +41,16 @@ defmodule AdventOfCode do
   end
 
   defp day_module(day) do
-    String.to_atom("Elixir.AdventOfCode.Day#{day2string(day)}")
+    String.to_atom("Elixir.AdventOfCode.Day#{format_day(day)}")
   end
 
-  defp read_lines(day, basename) do
-    ["..", "days", day2string(day), "#{basename}.txt"]
+  defp read_file(day, basename) do
+    ["priv", "days", format_day(day), "#{basename}.txt"]
     |> Path.join()
     |> File.read!()
-    |> String.split("\n")
   end
 
-  defp day2string(day) do
+  defp format_day(day) do
     day
     |> Integer.to_string()
     |> String.pad_leading(2, "0")

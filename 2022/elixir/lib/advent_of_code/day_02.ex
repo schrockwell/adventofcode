@@ -2,6 +2,8 @@ defmodule AdventOfCode.Day02 do
   @behaviour AdventOfCode
 
   def run(input) do
+    input = String.split(input, "\n")
+
     answer_a =
       input
       |> Enum.map(&(&1 |> parse_game_a() |> score_game()))

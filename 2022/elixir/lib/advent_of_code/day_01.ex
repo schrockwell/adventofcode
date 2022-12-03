@@ -4,6 +4,7 @@ defmodule AdventOfCode.Day01 do
   def run(input) do
     sorted_elves =
       input
+      |> String.split("\n")
       |> Enum.chunk_by(&(&1 == ""))
       |> Enum.reject(&(&1 == [""]))
       |> Enum.map(fn elf_calories ->

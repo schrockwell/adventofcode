@@ -6,6 +6,8 @@ defmodule AdventOfCode.Day03 do
   @priorities Map.merge(@lowercase_priorities, @uppercase_priorities)
 
   def run(input) do
+    input = String.split(input, "\n")
+
     answer_a =
       input
       |> Enum.flat_map(fn line ->
