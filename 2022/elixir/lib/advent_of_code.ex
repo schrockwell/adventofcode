@@ -2,6 +2,14 @@ defmodule AdventOfCode do
   @callback run(input :: String.t()) :: {:skip | term, :skip | term}
 
   def run(day, basename \\ :input) do
+    with {:ok, _expected_a, _expected_b, input} <- read_input_file(day, basename) do
+      {answer_a, answer_b} = day_module(day).run(input)
+
+      {:ok, answer_a, answer_b}
+    end
+  end
+
+  def run!(day, basename \\ :input) do
     with {:ok, expected_a, expected_b, input} <- read_input_file(day, basename) do
       {answer_a, answer_b} = day_module(day).run(input)
 
