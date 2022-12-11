@@ -1,0 +1,61 @@
+120056
+21816744824
+---
+%{
+  0 => %AdventOfCode.Day11.Monkey{
+    items: [89, 74],
+    op: &(&1 * 5),
+    factor: 17,
+    pass_to: 4,
+    fail_to: 7
+  },
+  1 => %AdventOfCode.Day11.Monkey{
+    items: [75, 69, 87, 57, 84, 90, 66, 50],
+    op: &(&1 + 3),
+    factor: 7,
+    pass_to: 3,
+    fail_to: 2
+  },
+  2 => %AdventOfCode.Day11.Monkey{
+    items: [55],
+    op: &(&1 + 7),
+    factor: 13,
+    pass_to: 0,
+    fail_to: 7
+  },
+  3 => %AdventOfCode.Day11.Monkey{
+    items: [69, 82, 69, 56, 68],
+    op: &(&1 + 5),
+    factor: 2,
+    pass_to: 0,
+    fail_to: 2
+  },
+  4 => %AdventOfCode.Day11.Monkey{
+    items: [72, 97, 50],
+    op: &(&1 + 2),
+    factor: 19,
+    pass_to: 6,
+    fail_to: 5
+  },
+  5 => %AdventOfCode.Day11.Monkey{
+    items: [90, 84, 56, 92, 91, 91],
+    op: &(&1 * 19),
+    factor: 3,
+    pass_to: 6,
+    fail_to: 1
+  },
+  6 => %AdventOfCode.Day11.Monkey{
+    items: [63, 93, 55, 53],
+    op: &(&1 * &1),
+    factor: 5,
+    pass_to: 3,
+    fail_to: 1
+  },
+  7 => %AdventOfCode.Day11.Monkey{
+    items: [50, 61, 52, 58, 86, 68, 97],
+    op: &(&1 + 4),
+    factor: 11,
+    pass_to: 5,
+    fail_to: 4
+  }
+}

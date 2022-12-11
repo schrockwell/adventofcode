@@ -1,0 +1,33 @@
+10605
+2713310158
+---
+%{
+  0 => %AdventOfCode.Day11.Monkey{
+    items: [79, 98],
+    op: &(&1 * 19),
+    factor: 23,
+    pass_to: 2,
+    fail_to: 3
+  },
+  1 => %AdventOfCode.Day11.Monkey{
+    items: [54, 65, 75, 74],
+    op: &(&1 + 6),
+    factor: 19,
+    pass_to: 2,
+    fail_to: 0
+  },
+  2 => %AdventOfCode.Day11.Monkey{
+    items: [79, 60, 97],
+    op: &(&1 * &1),
+    factor: 13,
+    pass_to: 1,
+    fail_to: 3
+  },
+  3 => %AdventOfCode.Day11.Monkey{
+    items: [74],
+    op: &(&1 + 3),
+    factor: 17,
+    pass_to: 0,
+    fail_to: 1
+  }
+}
