@@ -1,3 +1,8 @@
 {
-    "elixirLS.projectDir": "2021/elixir"
+    "elixirLS.projectDir": "2023/elixir",
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#3C1176",
+        "titleBar.activeBackground": "#5417A5",
+        "titleBar.activeForeground": "#FDFCFF"
+    }
 }
