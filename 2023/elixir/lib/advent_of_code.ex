@@ -42,7 +42,8 @@ defmodule AdventOfCode do
     {answers, ["---" | input]} =
       path
       |> File.read!()
-      |> String.split("\n", trim: true)
+      |> String.trim()
+      |> String.split("\n")
       |> Enum.split_while(&(&1 != "---"))
 
     {input, answers}
