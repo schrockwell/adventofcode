@@ -1,31 +1,47 @@
 defmodule AdventOfCode.Day14 do
   @behaviour AdventOfCode
 
+  @directions %{
+    0 => :north,
+    1 => :west,
+    2 => :south,
+    3 => :east
+  }
+
   # Part 1
   def run(_basename, 1, input) do
-    problem = parse_input(input)
+    input
+    |> parse_input()
+    |> cycle(1)
+    |> draw_map()
+    |> score()
+  end
 
+  # Part 2
+  def run(_basename, 2, input) do
+    input
+    |> parse_input()
+    |> cycle(1_000_000_000)
+    |> draw_map()
+    |> score()
+  end
+
+  defp cycle(problem, cycles) do
     new_map =
-      for x <- 0..(problem.width - 1), reduce: problem.map do
+      for i <- 0..(cycles - 1),
+          dir = Map.get(@directions, rem(i, 4)),
+          x <- 0..(dim(problem, dir) - 1),
+          reduce: problem.map do
         acc ->
           changes =
             problem.map
-            |> column(x)
-            |> roll()
+            |> take(dir, x)
+            |> roll(dir)
 
           Map.merge(acc, changes)
       end
 
-    problem =
-      %{problem | map: new_map}
-      |> draw_map()
-
-    score(problem)
-  end
-
-  # Part 2
-  def run(_basename, 2, _input) do
-    0
+    %{problem | map: new_map}
   end
 
   # Parse the input, for god's sake
@@ -50,15 +66,22 @@ defmodule AdventOfCode.Day14 do
   end
 
   # Getters
-  defp column(map, col) do
+  defp take(map, dir, col) when dir in [:north, :south] do
     Enum.filter(map, fn {{x, _}, _} -> x == col end)
   end
 
-  defp row(map, row) do
+  defp take(map, dir, row) when dir in [:west, :east] do
     Enum.filter(map, fn {{_, y}, _} -> y == row end)
   end
 
-  defp roll(line) do
+  defp roll(line, dir) do
+    sorter =
+      if dir in [:north, :west] do
+        fn {_, val} -> val == "." end
+      else
+        fn {_, val} -> val != "." end
+      end
+
     line
     |> Enum.sort()
     |> Enum.chunk_by(fn {_, val} -> val == "#" end)
@@ -69,7 +92,7 @@ defmodule AdventOfCode.Day14 do
       y_offset = chunk |> Enum.map(fn {{_, y}, _} -> y end) |> Enum.min()
 
       chunk
-      |> Enum.sort_by(fn {_, val} -> val == "." end)
+      |> Enum.sort_by(sorter)
       |> Enum.with_index()
       |> Enum.map(fn {{{x, _}, val}, new_y} ->
         {{x, new_y + y_offset}, val}
@@ -77,7 +100,6 @@ defmodule AdventOfCode.Day14 do
     end)
     |> List.flatten()
     |> Map.new()
-    |> IO.inspect(label: "roll line")
   end
 
   defp score(problem) do
@@ -100,4 +122,7 @@ defmodule AdventOfCode.Day14 do
 
     problem
   end
+
+  defp dim(problem, dir) when dir in [:north, :south], do: problem.width
+  defp dim(problem, dir) when dir in [:west, :east], do: problem.height
 end
